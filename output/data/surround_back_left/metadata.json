@@ -1,0 +1,70 @@
+{
+  "channel_name": "Surround Back Left",
+  "channel_num": 2,
+  "original_length": 65536,
+  "truncated_length": 16321,
+  "discarded_length": 49215,
+  "sample_rate": 48000,
+  "first_coefficient": 0.9838460087776184,
+  "time_domain": {
+    "max_coeff": 0.9838460087776184,
+    "truncated_max": 0.9838460087776184,
+    "discarded_max": 3.5895143355446635e-06,
+    "discarded_energy_percent": 2.3515080105016463e-06,
+    "first_16k_identical": true
+  },
+  "frequency_domain": {
+    "original_bins": 32768,
+    "truncated_bins": 8160,
+    "original_resolution_hz": 0.732421875,
+    "truncated_resolution_hz": 2.9409962624839165,
+    "max_difference_db": 0.42156131727827706,
+    "mean_difference_db": 0.0002479022770540748,
+    "rms_difference_db": 0.0042720385090224515,
+    "difference_by_band": {
+      "Sub-bass (20-60 Hz)": {
+        "max": 0.42156131727827706,
+        "mean": 0.041325843306662335,
+        "rms": 0.0994485550314017
+      },
+      "Bass (60-250 Hz)": {
+        "max": 0.060414071720603424,
+        "mean": 0.009663461906060471,
+        "rms": 0.01435173824646779
+      },
+      "Low-mid (250-500 Hz)": {
+        "max": 0.01830403293915328,
+        "mean": 0.0029074290150974983,
+        "rms": 0.004219422705497456
+      },
+      "Mid (500-2k Hz)": {
+        "max": 0.01001487802022738,
+        "mean": 0.0007430008591731878,
+        "rms": 0.0012885739589311
+      },
+      "High-mid (2k-6k Hz)": {
+        "max": 0.0037121663233579127,
+        "mean": 9.403431524307664e-05,
+        "rms": 0.00025728147024412185
+      },
+      "High (6k-12k Hz)": {
+        "max": 0.0015423398869918725,
+        "mean": 1.9595298794600767e-05,
+        "rms": 7.909107691422272e-05
+      },
+      "Very high (12k-20k Hz)": {
+        "max": 0.0009054493317668388,
+        "mean": 6.706546940343059e-06,
+        "rms": 2.7977910404618822e-05
+      }
+    }
+  },
+  "energy_analysis": {
+    "50_percent_at_sample": 0,
+    "90_percent_at_sample": 1,
+    "95_percent_at_sample": 1,
+    "99_percent_at_sample": 13,
+    "99.9_percent_at_sample": 231,
+    "99.99_percent_at_sample": 1525
+  }
+}

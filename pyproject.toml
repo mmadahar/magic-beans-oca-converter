@@ -1,0 +1,11 @@
+[project]
+name = "oca-json"
+version = "0.1.0"
+description = "OCA file analyzer and REW-to-FIR converter for Audyssey calibration"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "matplotlib>=3.7.0",
+]

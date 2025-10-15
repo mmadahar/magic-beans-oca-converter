@@ -1,0 +1,70 @@
+{
+  "channel_name": "Front Height Left",
+  "channel_num": 6,
+  "original_length": 65536,
+  "truncated_length": 16055,
+  "discarded_length": 49481,
+  "sample_rate": 48000,
+  "first_coefficient": 1.0176022052764893,
+  "time_domain": {
+    "max_coeff": 1.0176022052764893,
+    "truncated_max": 1.0176022052764893,
+    "discarded_max": 7.219956046355946e-07,
+    "discarded_energy_percent": 3.53740783104893e-08,
+    "first_16k_identical": true
+  },
+  "frequency_domain": {
+    "original_bins": 32768,
+    "truncated_bins": 8027,
+    "original_resolution_hz": 0.732421875,
+    "truncated_resolution_hz": 2.989722827779508,
+    "max_difference_db": 0.051248372480613646,
+    "mean_difference_db": 0.0001232887199856559,
+    "rms_difference_db": 0.0012226384984759357,
+    "difference_by_band": {
+      "Sub-bass (20-60 Hz)": {
+        "max": 0.0009641192037707235,
+        "mean": 0.0005154065513773825,
+        "rms": 0.0005399330994581674
+      },
+      "Bass (60-250 Hz)": {
+        "max": 0.051248372480613646,
+        "mean": 0.008547848182696315,
+        "rms": 0.012671407747107956
+      },
+      "Low-mid (250-500 Hz)": {
+        "max": 0.015244363471332623,
+        "mean": 0.0026743254309146243,
+        "rms": 0.003815677092045701
+      },
+      "Mid (500-2k Hz)": {
+        "max": 0.008084625938027612,
+        "mean": 0.00041882676274526004,
+        "rms": 0.0010466920981477145
+      },
+      "High-mid (2k-6k Hz)": {
+        "max": 1.693654733070371e-06,
+        "mean": 3.36185183950311e-07,
+        "rms": 4.264697461660175e-07
+      },
+      "High (6k-12k Hz)": {
+        "max": 1.578206074021038e-06,
+        "mean": 3.15975828550015e-07,
+        "rms": 3.974951849620685e-07
+      },
+      "Very high (12k-20k Hz)": {
+        "max": 1.8482164887700936e-06,
+        "mean": 3.290611215927902e-07,
+        "rms": 4.1228086753545093e-07
+      }
+    }
+  },
+  "energy_analysis": {
+    "50_percent_at_sample": 0,
+    "90_percent_at_sample": 0,
+    "95_percent_at_sample": 0,
+    "99_percent_at_sample": 0,
+    "99.9_percent_at_sample": 275,
+    "99.99_percent_at_sample": 759
+  }
+}
