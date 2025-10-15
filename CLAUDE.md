@@ -11,6 +11,28 @@ This is a Python toolkit for analyzing and modifying Audyssey room calibration f
 - Converting REW correction files to FIR filters
 - Performing FFT analysis to verify filter conversions
 
+## Project Structure
+
+```
+oca_json/
+├── src/                      # All Python source code
+│   ├── main.py              # Workflow orchestrator (WAV → OCA → FFT)
+│   ├── oca_file_analyzer.py # OCA file analyzer
+│   ├── wav_to_oca.py        # WAV to OCA converter
+│   ├── analyze_filter.py    # Filter analysis utilities
+│   └── comprehensive_fft_analysis.py  # FFT analysis
+├── docs/                     # All documentation
+├── reports/                  # Generated analysis reports
+├── input/                    # Input OCA files
+├── mb/                       # Magic Beans source files
+│   ├── convolution/         # WAV files (65,536 taps)
+│   └── rew/                 # REW files (reference only)
+└── output/                   # All generated outputs
+    ├── filters/             # Converted JSON filters
+    ├── data/                # CSV exports
+    └── plots/               # Analysis plots
+```
+
 ## Package Management
 
 This project uses **`uv`** for all Python operations. Never use `pip` or `python` directly.
@@ -19,10 +41,10 @@ This project uses **`uv`** for all Python operations. Never use `pip` or `python
 
 ```bash
 # Correct
-uv run python main.py summary
+uv run python src/main.py
 
 # Incorrect - Do NOT use
-python main.py summary
+python src/main.py
 pip install numpy
 ```
 
@@ -66,9 +88,25 @@ OCA files are **JSON files** containing:
 
 ### 3. Tool Architecture
 
-**Three main workflows:**
+**Four main tools:**
 
-#### A. OCA Analysis (`main.py`)
+#### A. Workflow Orchestrator (`src/main.py`) ⭐ PRIMARY TOOL
+**Complete pipeline that runs everything automatically.**
+
+Single command workflow:
+1. Scans `mb/convolution/` for Magic Beans WAV files
+2. Converts each WAV → OCA JSON filter (output/filters/)
+3. Runs comprehensive FFT analysis
+4. Generates detailed analysis report (reports/)
+
+Usage:
+```bash
+uv run python src/main.py
+```
+
+This is the **recommended way** to process Magic Beans filters. It handles the entire workflow automatically.
+
+#### B. OCA File Analyzer (`src/oca_file_analyzer.py`)
 Single-file analyzer with `OCAAnalyzer` class. Operates directly on `.oca` files.
 
 Commands:
@@ -81,10 +119,10 @@ Commands:
 
 Usage pattern:
 ```bash
-uv run python main.py <command> [args]
+uv run python src/oca_file_analyzer.py <command> [args]
 ```
 
-#### B. WAV to OCA Conversion (`wav_to_oca.py`)
+#### C. WAV to OCA Converter (`src/wav_to_oca.py`)
 Extracts FIR coefficients from Magic Beans WAV files (65,536 taps) and truncates to OCA length.
 
 **Critical functions:**
@@ -101,17 +139,19 @@ Safety system:
 Usage:
 ```bash
 # Preview filter
-uv run python wav_to_oca.py "path/to/filter.wav" --preview
+uv run python src/wav_to_oca.py "path/to/filter.wav" --preview
 
 # Convert with target length
-uv run python wav_to_oca.py "path/to/filter.wav" --target-length 16321 --output output.json
+uv run python src/wav_to_oca.py "path/to/filter.wav" --target-length 16321 --output output.json
 
 # Compare with existing OCA
-uv run python wav_to_oca.py "path/to/filter.wav" --compare-oca file.oca --channel 0
+uv run python src/wav_to_oca.py "path/to/filter.wav" --compare-oca file.oca --channel 0
 ```
 
-#### C. Comprehensive FFT Analysis (`comprehensive_fft_analysis.py`)
-**Most important tool for verification.** Performs both time-domain and frequency-domain analysis.
+**NOTE:** For batch conversion, use `src/main.py` instead which handles all channels automatically.
+
+#### D. Comprehensive FFT Analysis (`src/comprehensive_fft_analysis.py`)
+**Verification tool.** Performs both time-domain and frequency-domain analysis.
 
 **Why this exists:** The earlier `batch_convert_and_analyze.py` had a bug where it compared truncated data to itself (always showing 0.000000 dB difference). This fixed version compares:
 - Original 65K-tap WAV FFT (32,768 frequency bins)
@@ -138,9 +178,11 @@ output/
 
 Usage:
 ```bash
-uv run python comprehensive_fft_analysis.py
+uv run python src/comprehensive_fft_analysis.py
 # No arguments - processes all WAV files in mb/convolution/
 ```
+
+**NOTE:** This is automatically run by `src/main.py` as part of the workflow.
 
 ### 4. Channel Mapping
 
@@ -175,45 +217,56 @@ output/
 
 ## Common Tasks
 
-### Analyze an OCA File
+### Full Workflow - Convert All Magic Beans Filters ⭐ RECOMMENDED
+
+**Single command to do everything:**
+
+```bash
+uv run python src/main.py
+```
+
+This will:
+1. Convert all WAV files in `mb/convolution/` to OCA JSON
+2. Run comprehensive FFT analysis
+3. Generate detailed report in `reports/`
+
+### Analyze an Existing OCA File
 
 ```bash
 # Quick overview
-uv run python main.py summary
+uv run python src/oca_file_analyzer.py summary
 
 # See all channels
-uv run python main.py compare-channels
+uv run python src/oca_file_analyzer.py compare-channels
 
 # Deep dive on channel 0
-uv run python main.py inspect-filter 0
+uv run python src/oca_file_analyzer.py inspect-filter 0
 ```
 
-### Convert Magic Beans WAV to OCA
+### Convert Individual WAV Files (Advanced)
 
-**Two-step process:**
+**If you need to convert a single file manually:**
 
 1. **Preview and verify safety:**
 ```bash
-uv run python wav_to_oca.py "mb/convolution/Filters for Front Left.wav" --preview
+uv run python src/wav_to_oca.py "mb/convolution/Filters for Front Left.wav" --preview
 ```
-Check output for:
-- Active region ending before truncation point
-- Trailing zeros
-- Energy distribution
 
 2. **Convert:**
 ```bash
-uv run python wav_to_oca.py "mb/convolution/Filters for Front Left.wav" \
+uv run python src/wav_to_oca.py "mb/convolution/Filters for Front Left.wav" \
   --target-length 16321 \
   --output output/filters/ch0_front_left.json
 ```
 
-### Run Comprehensive FFT Analysis
+**For most users, use `src/main.py` instead which handles everything automatically.**
 
-**Use this to verify conversion quality:**
+### Run FFT Analysis Only (Advanced)
+
+**If you already have converted filters and just want analysis:**
 
 ```bash
-uv run python comprehensive_fft_analysis.py
+uv run python src/comprehensive_fft_analysis.py
 ```
 
 This will:
@@ -250,6 +303,54 @@ oca['channels'][0]['filterLV'] = new_filter  # Or keep original filterLV
 with open('modified.oca', 'w') as f:
     json.dump(oca, f, indent=2)
 ```
+
+## Phase Compatibility - CRITICAL INFORMATION
+
+### Magic Beans vs Audyssey OCA: Phase Response Verification
+
+**Question**: Are Magic Beans convolution filters compatible with Audyssey OCA minimum phase filters?
+
+**Answer**: ✅ **YES - Both use minimum phase FIR filters**
+
+#### Evidence:
+
+**Magic Beans WAV Files** (verified via impulse response analysis):
+- Peak coefficient at sample 0 (first sample)
+- 100% of energy concentrated in first ~1000 samples
+- Asymmetric impulse response
+- Causal filter (all energy at start, not centered)
+- **Conclusion**: Minimum phase FIR
+
+**Audyssey OCA** (confirmed via technical documentation):
+- Explicitly converts all speaker responses to minimum phase
+- Inverts minimum phase response over target curve
+- Uses minimum phase because "only minimum phase response is truly invertible"
+- **Conclusion**: Minimum phase FIR
+
+#### Why This Matters:
+
+**Linear phase FIR filters** would cause:
+- Pre-ringing artifacts (sound before the actual event)
+- Excessive latency (delay required for symmetric response)
+- Increased coefficient count (symmetric impulse requires more samples)
+- Incompatibility with Audyssey's inversion algorithm
+
+**Minimum phase FIR filters** provide:
+- Causal response (no pre-ringing)
+- Minimum group delay for given magnitude response
+- Natural acoustic behavior (matches room acoustics)
+- Directly invertible for room correction
+- Efficient coefficient usage
+
+#### Allpass Filters:
+
+Allpass filters affect phase without changing magnitude response. They are not directly relevant to this WAV→OCA conversion because:
+1. Both systems use minimum phase (phase is already minimized)
+2. OCA filters contain magnitude correction only
+3. Phase correction is handled by Audyssey's time alignment (cross-correlation)
+4. Importing magnitude-only corrections does not introduce allpass issues
+
+**Bottom Line**: The conversion is **technically sound**. Magic Beans minimum phase convolution filters are fully compatible with Audyssey OCA's minimum phase filter architecture.
 
 ## Critical Concepts
 

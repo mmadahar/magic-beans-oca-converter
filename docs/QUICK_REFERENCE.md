@@ -1,42 +1,57 @@
 # Quick Reference Guide
 
-## Command Cheat Sheet
+## Main Workflow - Magic Beans Conversion ⭐
+
+### Convert All WAV Files to OCA Filters (RECOMMENDED)
+```bash
+uv run python src/main.py
+```
+This single command:
+1. Converts all Magic Beans WAV files → OCA JSON filters
+2. Runs comprehensive FFT analysis
+3. Generates detailed report in `reports/`
+
+**This is the easiest way to process Magic Beans filters!**
+
+---
+
+## OCA File Analysis Commands
 
 ### View Overall Configuration
 ```bash
-uv run python main.py summary
+uv run python src/oca_file_analyzer.py summary
 ```
 Shows: Version, model, EQ type, bass settings, channel count
 
 ### List All Channels
 ```bash
-uv run python main.py list-channels
+uv run python src/oca_file_analyzer.py list-channels
 ```
 Shows: Type, distance, trim, crossover, filter lengths for all 8 channels
 
 ### Inspect Single Channel
 ```bash
-uv run python main.py inspect-filter <channel_number>
+uv run python src/oca_file_analyzer.py inspect-filter <channel_number>
 ```
 Shows: Detailed stats, first/last 20 coefficients, min/max/mean
 
-Example: `uv run python main.py inspect-filter 0`
+Example: `uv run python src/oca_file_analyzer.py inspect-filter 0`
 
 ### View Filter in Chunks
 ```bash
-uv run python main.py chunk-filter <channel> --start <index> --size <count>
+uv run python src/oca_file_analyzer.py chunk-filter <channel> --start <index> --size <count>
 ```
-Example: `uv run python main.py chunk-filter 0 --start 1000 --size 50`
+Example: `uv run python src/oca_file_analyzer.py chunk-filter 0 --start 1000 --size 50`
 
 ### Export Filter to CSV
 ```bash
-uv run python main.py export-filter <channel> <output.csv>
+uv run python src/oca_file_analyzer.py export-filter <channel> <output.csv>
 ```
-Example: `uv run python main.py export-filter 0 front_left.csv`
+Example: `uv run python src/oca_file_analyzer.py export-filter 0 front_left.csv`
 
 ### Compare All Channels
 ```bash
-uv run python main.py compare-channels
+uv run python src/oca_file_analyzer.py compare-channels
 ```
 Shows: Side-by-side comparison table, grouping by filter length
 
@@ -75,21 +90,21 @@ Based on your file (may vary by setup):
 
 ### Workflow 1: Quick Overview
 ```bash
-uv run python main.py summary
-uv run python main.py compare-channels
+uv run python src/oca_file_analyzer.py summary
+uv run python src/oca_file_analyzer.py compare-channels
 ```
 
 ### Workflow 2: Deep Dive on One Channel
 ```bash
-uv run python main.py inspect-filter 0
-uv run python main.py chunk-filter 0 --start 0 --size 100
-uv run python main.py export-filter 0 analysis.csv
+uv run python src/oca_file_analyzer.py inspect-filter 0
+uv run python src/oca_file_analyzer.py chunk-filter 0 --start 0 --size 100
+uv run python src/oca_file_analyzer.py export-filter 0 analysis.csv
 ```
 
 ### Workflow 3: Export All Channels
 ```bash
 for i in {0..7}; do
-  uv run python main.py export-filter $i channel_${i}.csv
+  uv run python src/oca_file_analyzer.py export-filter $i channel_${i}.csv
 done
 ```
 
@@ -218,7 +233,8 @@ magnitude_db = 20*np.log10(np.abs(freq_response[:len(freq_response)//2]))
 
 - **Full documentation**: [OCA_FORMAT.md](OCA_FORMAT.md)
 - **Project overview**: [README.md](README.md)
-- **Main tool**: [main.py](main.py)
+- **Workflow orchestrator**: [src/main.py](../src/main.py)
+- **OCA analyzer**: [src/oca_file_analyzer.py](../src/oca_file_analyzer.py)
 
 ---
 
